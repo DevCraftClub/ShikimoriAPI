@@ -4,3 +4,7 @@ parameters:
         - src
         - tests
     ignoreErrors:
+        # Lombok Getter/Setter and DevTools With assign via magic methods.
+        -
+            identifier: property.unusedType
+            path: src/*

@@ -10,6 +10,7 @@ use DevCraftClub\Shikimori\Exception\GraphQLQueryException;
 use DevCraftClub\Shikimori\Exception\NetworkException;
 use DevCraftClub\Shikimori\Filter\UserListFilter;
 use DevCraftClub\Shikimori\Query\UserQuery;
+use DevCraftClub\Shikimori\Util\ArrayUtil;
 
 final readonly class UserRepository
 {
@@ -76,6 +77,6 @@ final readonly class UserRepository
             return null;
         }
 
-        return UserDTO::fromArray($data);
+        return UserDTO::fromArray(ArrayUtil::stringKeyed($data));
     }
 }

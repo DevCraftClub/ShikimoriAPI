@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Devcraft\Abstracts\AbstractWith;
 use Devcraft\Attributes\With;
 use Devcraft\Attributes\WithItem;
+use DevCraftClub\Shikimori\Util\ArrayUtil;
 use Lombok\Getter;
 use Lombok\Setter;
 
@@ -119,43 +120,41 @@ final class AnimeDTO extends AbstractWith
     private array $studios = [];
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
      */
     public static function fromArray(array $data): self
     {
         $id = $data['id'] ?? 0;
         $anime = (new self())
             ->withId(\is_int($id) || \is_string($id) ? $id : 0)
-            ->withName(\is_string($data['name'] ?? null) ? (string) $data['name'] : '')
-            ->withRussian(\is_string($data['russian'] ?? null) ? (string) $data['russian'] : null)
-            ->withKind(\is_string($data['kind'] ?? null) ? (string) $data['kind'] : null)
-            ->withStatus(\is_string($data['status'] ?? null) ? (string) $data['status'] : null)
-            ->withScore(self::optionalFloat($data['score'] ?? null))
-            ->withEpisodes(self::optionalInt($data['episodes'] ?? null))
-            ->withEpisodesAired(self::optionalInt($data['episodesAired'] ?? null))
-            ->withDescription(\is_string($data['description'] ?? null) ? (string) $data['description'] : null)
-            ->withUrl(\is_string($data['url'] ?? null) ? (string) $data['url'] : null)
-            ->withDuration(self::optionalInt($data['duration'] ?? null))
-            ->withRating(\is_string($data['rating'] ?? null) ? (string) $data['rating'] : null)
-            ->withFranchise(\is_string($data['franchise'] ?? null) ? (string) $data['franchise'] : null)
-            ->withAiredOn(\is_string($data['airedOn'] ?? null) ? (string) $data['airedOn'] : null)
-            ->withReleasedOn(\is_string($data['releasedOn'] ?? null) ? (string) $data['releasedOn'] : null)
-            ->withPoster(PosterDTO::fromArray(\is_array($data['poster'] ?? null) ? $data['poster'] : null))
-            ->withUpdatedAt(self::parseDateTime($data['updatedAt'] ?? null));
+            ->withName(ArrayUtil::stringOrDefault($data, 'name', ''))
+            ->withRussian(ArrayUtil::optionalString($data, 'russian'))
+            ->withKind(ArrayUtil::optionalString($data, 'kind'))
+            ->withStatus(ArrayUtil::optionalString($data, 'status'))
+            ->withScore(ArrayUtil::optionalFloat($data, 'score'))
+            ->withEpisodes(ArrayUtil::optionalInt($data, 'episodes'))
+            ->withEpisodesAired(ArrayUtil::optionalInt($data, 'episodesAired'))
+            ->withDescription(ArrayUtil::optionalString($data, 'description'))
+            ->withUrl(ArrayUtil::optionalString($data, 'url'))
+            ->withDuration(ArrayUtil::optionalInt($data, 'duration'))
+            ->withRating(ArrayUtil::optionalString($data, 'rating'))
+            ->withFranchise(ArrayUtil::optionalString($data, 'franchise'))
+            ->withAiredOn(ArrayUtil::optionalString($data, 'airedOn'))
+            ->withReleasedOn(ArrayUtil::optionalString($data, 'releasedOn'))
+            ->withPoster(PosterDTO::fromArray(ArrayUtil::optionalArray($data, 'poster')))
+            ->withUpdatedAt(ArrayUtil::optionalDateTime($data, 'updatedAt'));
 
-        $genres = $data['genres'] ?? null;
-        if (\is_array($genres)) {
+        $genres = ArrayUtil::optionalListOfMaps($data, 'genres');
+        if ($genres !== null) {
             foreach ($genres as $genre) {
-                if (\is_array($genre)) {
-                    $anime = $anime->withGenresItem(GenreDTO::fromArray($genre));
-                }
+                $anime = $anime->withGenresItem(GenreDTO::fromArray($genre));
             }
         }
 
-        $studios = $data['studios'] ?? null;
-        if (\is_array($studios)) {
+        $studios = ArrayUtil::optionalListOfMaps($data, 'studios');
+        if ($studios !== null) {
             foreach ($studios as $studio) {
-                $studioDto = StudioDTO::fromArray(\is_array($studio) ? $studio : null);
+                $studioDto = StudioDTO::fromArray($studio);
                 if ($studioDto !== null) {
                     $anime = $anime->withStudiosItem($studioDto);
                 }
@@ -197,28 +196,5 @@ final class AnimeDTO extends AbstractWith
                 $this->studios
             ),
         ];
-    }
-
-    private static function parseDateTime(mixed $value): ?DateTimeImmutable
-    {
-        if (!\is_string($value) || $value === '') {
-            return null;
-        }
-
-        try {
-            return new DateTimeImmutable($value);
-        } catch (\Throwable) {
-            return null;
-        }
-    }
-
-    private static function optionalInt(mixed $value): ?int
-    {
-        return \is_int($value) ? $value : null;
-    }
-
-    private static function optionalFloat(mixed $value): ?float
-    {
-        return \is_int($value) || \is_float($value) ? (float) $value : null;
     }
 }

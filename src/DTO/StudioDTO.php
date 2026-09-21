@@ -35,7 +35,7 @@ final class StudioDTO extends AbstractWith
     private ?string $imageUrl = null;
 
     /**
-     * @param array<string, mixed>|null $data
+     * @param array<array-key, mixed>|null $data
      */
     public static function fromArray(?array $data): ?self
     {

@@ -9,31 +9,51 @@ use DateTimeImmutable;
 final class ArrayUtil
 {
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
+     * @return array<string, mixed>
+     */
+    public static function stringKeyed(array $data): array
+    {
+        $result = [];
+        foreach ($data as $key => $value) {
+            $result[(string) $key] = $value;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array<array-key, mixed> $data
      */
     public static function stringOrDefault(array $data, string $key, string $default): string
     {
-        return \is_string($data[$key] ?? null) ? (string) $data[$key] : $default;
+        $value = $data[$key] ?? null;
+
+        return \is_string($value) ? $value : $default;
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
      */
     public static function optionalString(array $data, string $key): ?string
     {
-        return \is_string($data[$key] ?? null) ? (string) $data[$key] : null;
+        $value = $data[$key] ?? null;
+
+        return \is_string($value) ? $value : null;
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
      */
     public static function optionalInt(array $data, string $key): ?int
     {
-        return \is_int($data[$key] ?? null) ? (int) $data[$key] : null;
+        $value = $data[$key] ?? null;
+
+        return \is_int($value) ? $value : null;
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
      */
     public static function optionalFloat(array $data, string $key): ?float
     {
@@ -43,16 +63,39 @@ final class ArrayUtil
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
      * @return array<string, mixed>|null
      */
     public static function optionalArray(array $data, string $key): ?array
     {
-        return \is_array($data[$key] ?? null) ? $data[$key] : null;
+        $value = $data[$key] ?? null;
+
+        return \is_array($value) ? self::stringKeyed($value) : null;
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
+     * @return list<array<string, mixed>>|null
+     */
+    public static function optionalListOfMaps(array $data, string $key): ?array
+    {
+        $value = $data[$key] ?? null;
+        if (!\is_array($value)) {
+            return null;
+        }
+
+        $result = [];
+        foreach ($value as $item) {
+            if (\is_array($item)) {
+                $result[] = self::stringKeyed($item);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array<array-key, mixed> $data
      */
     public static function optionalDateTime(array $data, string $key): ?DateTimeImmutable
     {
