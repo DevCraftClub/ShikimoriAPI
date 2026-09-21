@@ -33,7 +33,7 @@
         "php": "^8.3|^8.4|^8.5",
         "ext-json": "*",
         "analog/analog": "^1.0",
-        "cycle/annotated": "^3.4",
+        "cycle/annotated": "^3.4 || ^4.0",
         "cycle/orm": "^2.5",
         "devcraftclub/dev-tools": "^1.1",
         "guzzlehttp/guzzle": "^7.8",
@@ -44,7 +44,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.40",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "^1.10 || ^2.0",
         "phpunit/phpunit": "^10.5",
         "symfony/var-dumper": "^6.4",
         "vlucas/phpdotenv": "^5.6"
