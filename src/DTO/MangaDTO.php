@@ -99,7 +99,7 @@ final class MangaDTO extends AbstractWith
     private array $genres = [];
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
      */
     public static function fromArray(array $data): self
     {
@@ -120,12 +120,10 @@ final class MangaDTO extends AbstractWith
             ->withUpdatedAt(ArrayUtil::optionalDateTime($data, 'updatedAt'))
             ->withPoster(PosterDTO::fromArray(ArrayUtil::optionalArray($data, 'poster')));
 
-        $genres = ArrayUtil::optionalArray($data, 'genres');
+        $genres = ArrayUtil::optionalListOfMaps($data, 'genres');
         if ($genres !== null) {
             foreach ($genres as $genre) {
-                if (\is_array($genre)) {
-                    $manga = $manga->withGenresItem(GenreDTO::fromArray($genre));
-                }
+                $manga = $manga->withGenresItem(GenreDTO::fromArray($genre));
             }
         }
 

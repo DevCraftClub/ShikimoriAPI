@@ -77,12 +77,13 @@ final class UserRateDTO extends AbstractWith
     private ?AnimeDTO $target = null;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
      */
     public static function fromArray(array $data): self
     {
         $id = $data['id'] ?? 0;
-        $target = $data['target'] ?? null;
+        $user = ArrayUtil::optionalArray($data, 'user');
+        $target = ArrayUtil::optionalArray($data, 'target');
 
         return (new self())
             ->withId(\is_int($id) || \is_string($id) ? $id : 0)
@@ -94,8 +95,8 @@ final class UserRateDTO extends AbstractWith
             ->withRewatches(ArrayUtil::optionalInt($data, 'rewatches'))
             ->withCreatedAt(ArrayUtil::optionalDateTime($data, 'createdAt'))
             ->withUpdatedAt(ArrayUtil::optionalDateTime($data, 'updatedAt'))
-            ->withUser(\is_array($data['user'] ?? null) ? UserDTO::fromArray($data['user']) : null)
-            ->withTarget(\is_array($target) ? AnimeDTO::fromArray($target) : null);
+            ->withUser($user !== null ? UserDTO::fromArray($user) : null)
+            ->withTarget($target !== null ? AnimeDTO::fromArray($target) : null);
     }
 
     /**

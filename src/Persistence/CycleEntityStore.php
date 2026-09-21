@@ -18,7 +18,6 @@ final readonly class CycleEntityStore implements EntityStoreInterface
 
     public function findById(string $entityClass, int|string $id): ?StorableEntity
     {
-        /** @phpstan-ignore-next-line Cycle template resolution */
         $repository = $this->orm->getRepository($entityClass);
         $entity = $repository->findByPK($id);
 

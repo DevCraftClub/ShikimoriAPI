@@ -193,43 +193,51 @@ final class SdkConfig extends AbstractWith
     {
         $value = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
 
-        if ($value === false || $value === '') {
+        if (!\is_string($value) || $value === '') {
             return $default;
         }
 
-        return (string) $value;
+        return $value;
     }
 
     private static function envInt(string $key, int $default): int
     {
         $value = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
 
-        if ($value === false || $value === '') {
-            return $default;
+        if (\is_int($value)) {
+            return $value;
         }
 
-        return (int) $value;
+        if (\is_string($value) && $value !== '' && is_numeric($value)) {
+            return (int) $value;
+        }
+
+        return $default;
     }
 
     private static function envNullableInt(string $key, ?int $default): ?int
     {
         $value = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
 
-        if ($value === false || $value === '') {
-            return $default;
+        if (\is_int($value)) {
+            return $value;
         }
 
-        return (int) $value;
+        if (\is_string($value) && $value !== '' && is_numeric($value)) {
+            return (int) $value;
+        }
+
+        return $default;
     }
 
     private static function envBool(string $key, bool $default): bool
     {
         $value = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
 
-        if ($value === false || $value === '') {
+        if (!\is_string($value) || $value === '') {
             return $default;
         }
 
-        return \in_array(strtolower((string) $value), ['1', 'true', 'yes', 'on'], true);
+        return \in_array(strtolower($value), ['1', 'true', 'yes', 'on'], true);
     }
 }

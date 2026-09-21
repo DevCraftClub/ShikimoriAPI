@@ -56,13 +56,11 @@ final class SlidingWindowRateLimiter implements RateLimiterInterface
 
         $this->requests[] = $this->now();
 
-        $lastTimestamp = end($this->requests);
-        if ($lastTimestamp !== false) {
-            $elapsed = $now - $lastTimestamp;
-            if ($elapsed < $minInterval && $elapsed > 0.0) {
-                $sleep = $minInterval - $elapsed;
-                usleep((int) ($sleep * 1_000_000));
-            }
+        $lastTimestamp = $this->requests[array_key_last($this->requests)];
+        $elapsed = $now - $lastTimestamp;
+        if ($elapsed < $minInterval && $elapsed > 0.0) {
+            $sleep = $minInterval - $elapsed;
+            usleep((int) ($sleep * 1_000_000));
         }
     }
 

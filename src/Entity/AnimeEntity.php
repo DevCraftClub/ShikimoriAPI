@@ -9,6 +9,7 @@ use Cycle\Annotated\Annotation\Entity;
 use DateTimeImmutable;
 use DevCraftClub\Shikimori\DTO\AnimeDTO;
 use DevCraftClub\Shikimori\Persistence\StorableEntity;
+use DevCraftClub\Shikimori\Util\ArrayUtil;
 
 #[Entity(table: 'shikimori_animes')]
 class AnimeEntity implements StorableEntity
@@ -108,9 +109,9 @@ class AnimeEntity implements StorableEntity
         $this->setAiredOn(\is_string($data['airedOn'] ?? null) ? (string) $data['airedOn'] : null);
         $this->setReleasedOn(\is_string($data['releasedOn'] ?? null) ? (string) $data['releasedOn'] : null);
         $this->setUpdatedAt(self::parseDateTime($data['updatedAt'] ?? null));
-        $this->setPoster(\is_array($data['poster'] ?? null) ? $data['poster'] : null);
-        $this->setGenres(\is_array($data['genres'] ?? null) ? $data['genres'] : null);
-        $this->setStudios(\is_array($data['studios'] ?? null) ? $data['studios'] : null);
+        $this->setPoster(ArrayUtil::optionalArray($data, 'poster'));
+        $this->setGenres(ArrayUtil::optionalListOfMaps($data, 'genres'));
+        $this->setStudios(ArrayUtil::optionalListOfMaps($data, 'studios'));
         $this->markFetchedNow();
     }
 
