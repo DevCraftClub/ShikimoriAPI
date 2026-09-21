@@ -108,24 +108,6 @@ $token = $oauth->exchangeCode($_GET['code']);
 $refreshed = $oauth->refreshToken($token->getRefreshToken());
 ```
 
-## Разработка
-
-```bash
-composer install
-vendor/bin/phpstan analyse --level=9
-vendor/bin/phpunit --no-coverage
-```
-
-## Обновление Packagist
-
-При пуше в `main`/`master` workflow сравнивает `version` в `composer.json` с предыдущим коммитом. Если версия изменилась или пуш пришёлся на тег, GitHub Actions вызывает API Packagist с токеном из переменной `COMPOSER_UPDATE_API_KEY`:
-
-```bash
-# Settings → Secrets and variables → Actions → Repository secrets
-COMPOSER_UPDATE_API_KEY=your-packagist-api-token
-```
-
-Также задайте `PACKAGIST_USERNAME` в переменных репозитория (vars), иначе workflow использует `devcraftclub` по умолчанию.
 
 ## Лицензия
 
