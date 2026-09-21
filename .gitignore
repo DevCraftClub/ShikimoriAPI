@@ -1,0 +1,35 @@
+# Composer
+/vendor/
+/composer.lock
+
+# Environment
+/.env
+/.env.local
+/.env.*.local
+
+# PHPUnit
+/.phpunit.cache/
+/phpunit.xml
+/.phpunit.result.cache
+
+# IDE
+/.idea/
+/.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / caches
+*.log
+*.cache
+.php-cs-fixer.cache
+
+# Build artifacts
+/coverage/
+/dist/
+/build/
+
+# AI worktrees
+/.kilo/
+/.cursor/

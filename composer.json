@@ -1,0 +1,72 @@
+{
+    "name": "devcraftclub/shikimori-api-php",
+    "description": "PHP 8.3+ GraphQL API Client for Shikimori with Cycle ORM persistence and caching",
+    "type": "library",
+    "version": "1.0.0",
+    "homepage": "https://github.com/DevCraftClub/ShikimoriAPI",
+    "support": {
+        "issues": "https://github.com/DevCraftClub/ShikimoriAPI/issues",
+        "source": "https://github.com/DevCraftClub/ShikimoriAPI"
+    },
+    "license": "MIT",
+    "keywords": [
+        "shikimori",
+        "graphql",
+        "anime",
+        "manga",
+        "api-client",
+        "cycle-orm",
+        "devcraftclub"
+    ],
+    "authors": [
+        {
+            "name": "DevCraftClub Team",
+            "homepage": "https://devcraft.club"
+        },
+        {
+            "name": "Maxim Harder",
+            "homepage": "https://maxim-harder.de",
+            "email": "dev@devcraft.club"
+        }
+    ],
+    "require": {
+        "php": "^8.3|^8.4|^8.5",
+        "ext-json": "*",
+        "analog/analog": "^1.0",
+        "cycle/annotated": "^3.4",
+        "cycle/orm": "^2.5",
+        "devcraftclub/dev-tools": "^1.1",
+        "guzzlehttp/guzzle": "^7.8",
+        "guzzlehttp/psr7": "^2.6",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/simple-cache": "^3.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.40",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.5",
+        "symfony/var-dumper": "^6.4",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "DevCraftClub\\Shikimori\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DevCraftClub\\Shikimori\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -1,0 +1,53 @@
+name: Update Packagist
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - '*'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      COMPOSER_UPDATE_API_KEY: ${{ secrets.COMPOSER_UPDATE_API_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect version change
+        id: version
+        run: |
+          current_version=$(jq -r '.version // empty' composer.json)
+          echo "current_version=${current_version}" >> "$GITHUB_OUTPUT"
+
+          previous_version=""
+          if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            previous_version=$(git show HEAD~1:composer.json | jq -r '.version // empty')
+          fi
+
+          if [ "${current_version}" != "${previous_version}" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger Packagist update
+        if: github.ref_type == 'tag' || steps.version.outputs.changed == 'true'
+        env:
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          PACKAGIST_USERNAME: ${{ vars.PACKAGIST_USERNAME || 'devcraftclub' }}
+        run: |
+          curl -fsS -X POST \
+            "https://packagist.org/api/update-package?username=${PACKAGIST_USERNAME}&apiToken=${COMPOSER_UPDATE_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"repository\":{\"url\":\"${REPO_URL}\"}}"
+
+      - name: Skip update
+        if: github.ref_type != 'tag' && steps.version.outputs.changed != 'true'
+        run: |
+          echo "Version unchanged (${{ steps.version.outputs.current_version }}). Skipping Packagist update."
